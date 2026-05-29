@@ -19,7 +19,12 @@ const navItems = [
   { icon: SlidersHorizontal, label: "제어 센터", active: false },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  activeTab: string;
+  onTabSelect: (tab: string) => void;
+}
+
+export default function Sidebar({ activeTab, onTabSelect }: SidebarProps) {
   return (
     <aside
       className="flex flex-col h-full"
@@ -58,29 +63,29 @@ export default function Sidebar() {
       >
         {navItems.map((item) => {
           const Icon = item.icon;
+          const isActive = activeTab === item.label;
           return (
             <button
               key={item.label}
+              onClick={() => onTabSelect(item.label)}
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
                 padding: "12px 12px",
                 borderRadius: "8px",
-                border: item.active
-                  ? "1px solid transparent"
-                  : "1px solid transparent",
-                background: item.active ? "#f9a2c0" : "transparent",
-                color: item.active ? "#1a1a1f" : "#9999aa",
+                border: "1px solid transparent",
+                background: isActive ? "#f9a2c0" : "transparent",
+                color: isActive ? "#1a1a1f" : "#9999aa",
                 fontSize: "13.5px",
-                fontWeight: item.active ? 700 : 400,
+                fontWeight: isActive ? 700 : 400,
                 cursor: "pointer",
                 textAlign: "left",
                 transition: "all 0.15s ease",
                 width: "100%",
               }}
               onMouseEnter={(e) => {
-                if (!item.active) {
+                if (!isActive) {
                   (e.currentTarget as HTMLButtonElement).style.color =
                     "#e8e8ec";
                   (e.currentTarget as HTMLButtonElement).style.background =
@@ -88,7 +93,7 @@ export default function Sidebar() {
                 }
               }}
               onMouseLeave={(e) => {
-                if (!item.active) {
+                if (!isActive) {
                   (e.currentTarget as HTMLButtonElement).style.color =
                     "#9999aa";
                   (e.currentTarget as HTMLButtonElement).style.background =

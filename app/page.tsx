@@ -30,6 +30,7 @@ const DEFAULT_SCORES: Score[] = [
 ];
 
 export default function DashboardPage() {
+  const [activeTab, setActiveTab] = useState<string>("대시보드");
   const [messages, setMessages] = useState<Message[]>([]);
   const [reviews, setReviews]   = useState<Review[]>([]);
   const [scores, setScores]     = useState<Score[]>(DEFAULT_SCORES);
@@ -310,25 +311,49 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <Sidebar />
-      <ChatPanel 
-        messages={messages} 
-        isLoading={isLoading} 
-        onSend={handleSend} 
-        onExportExcel={handleExportExcel} 
-      />
-      <AnalyticsPanel
-        reviews={reviews}
-        scores={scores}
-        products={products}
-        isLoading={isLoading}
-        onPadSelect={handlePadSelect}
-        aiBriefing={aiBriefing}
-        pinnedWidget={pinnedWidget}
-        onPinWidget={handlePinWidget}
-        totalReviews={totalReviews}
-        sentimentCounts={sentimentCounts}
-      />
+      <Sidebar activeTab={activeTab} onTabSelect={setActiveTab} />
+      {activeTab === "대시보드" && (
+        <>
+          <ChatPanel 
+            messages={messages} 
+            isLoading={isLoading} 
+            onSend={handleSend} 
+            onExportExcel={handleExportExcel} 
+          />
+          <AnalyticsPanel
+            reviews={reviews}
+            scores={scores}
+            products={products}
+            isLoading={isLoading}
+            onPadSelect={handlePadSelect}
+            aiBriefing={aiBriefing}
+            pinnedWidget={pinnedWidget}
+            onPinWidget={handlePinWidget}
+            totalReviews={totalReviews}
+            sentimentCounts={sentimentCounts}
+          />
+        </>
+      )}
+      {activeTab === "AI 인사이트" && (
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
+          AI 인사이트 패널 준비중
+        </div>
+      )}
+      {activeTab === "리뷰 분석" && (
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
+          리뷰 분석 패널 준비중
+        </div>
+      )}
+      {activeTab === "패드 레시피 라인업" && (
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
+          패드 레시피 라인업 패널 준비중
+        </div>
+      )}
+      {activeTab === "제어 센터" && (
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
+          제어 센터 패널 준비중
+        </div>
+      )}
     </main>
   );
 }
