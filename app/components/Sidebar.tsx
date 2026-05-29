@@ -14,7 +14,8 @@ import {
   X,
   CheckCircle2,
   Mail,
-  Key
+  Key,
+  Sliders
 } from "lucide-react";
 
 const navItems = [
@@ -25,10 +26,24 @@ const navItems = [
   { icon: SlidersHorizontal, label: "제어 센터", active: false },
 ];
 
+interface UserAccount {
+  username: string;
+  password?: string;
+  email: string;
+  profileGradient?: string;
+}
+
 interface SidebarProps {
   activeTab: string;
   onTabSelect: (tab: string) => void;
 }
+
+const GRADIENT_PRESETS = [
+  { label: "Pink-Blue", value: "linear-gradient(135deg, #FF5E84 0%, #7fb2f0 100%)" },
+  { label: "Purple-Sunset", value: "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)" },
+  { label: "Emerald-Ocean", value: "linear-gradient(135deg, #10b981 0%, #3b82f6 100%)" },
+  { label: "Amber-Fire", value: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)" },
+];
 
 export default function Sidebar({ activeTab, onTabSelect }: SidebarProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,14 +74,24 @@ export default function Sidebar({ activeTab, onTabSelect }: SidebarProps) {
   const [successMsg, setSuccessMsg] = useState("");
 
   // 가입된 유저 리스트 및 현재 유저 상태
-  const [users, setUsers] = useState<{username:string;password:string;email:string;}[]>([]);
-  const [currentUser, setCurrentUser] = useState<{username:string;email:string;} | null>(null);
+  const [users, setUsers] = useState<UserAccount[]>([]);
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+
+  // 개인 설정 관리 모달 상태
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [editEmail, setEditEmail] = useState("");
+  const [editOldPassword, setEditOldPassword] = useState("");
+  const [editNewPassword, setEditNewPassword] = useState("");
+  const [editConfirmPassword, setEditConfirmPassword] = useState("");
+  const [editGradient, setEditGradient] = useState("linear-gradient(135deg, #FF5E84 0%, #7fb2f0 100%)");
+  const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState("");
 
   // 1. 초기 로드 및 세션 복원
   useEffect(() => {
     const storedUsers = localStorage.getItem("tones_users");
     if (!storedUsers) {
-      const defaultUsers = [{ username: "admin", password: "1234", email: "admin@tones.ai" }];
+      const defaultUsers = [{ username: "admin", password: "1234", email: "admin@tones.ai", profileGradient: "linear-gradient(135deg, #FF5E84 0%, #7fb2f0 100%)" }];
       localStorage.setItem("tones_users", JSON.stringify(defaultUsers));
       setUsers(defaultUsers);
     } else {
@@ -129,7 +154,12 @@ export default function Sidebar({ activeTab, onTabSelect }: SidebarProps) {
       setErrorMsg("이미 존재하는 아이디입니다.");
       return;
     }
-    const newUser = { username: regUsername, password: regPassword, email: regEmail };
+    const newUser = { 
+      username: regUsername, 
+      password: regPassword, 
+      email: regEmail,
+      profileGradient: "linear-gradient(135deg, #FF5E84 0%, #7fb2f0 100%)" 
+    };
     const updatedUsers = [...users, newUser];
     setUsers(updatedUsers);
     localStorage.setItem("tones_users", JSON.stringify(updatedUsers));
@@ -172,6 +202,64 @@ export default function Sidebar({ activeTab, onTabSelect }: SidebarProps) {
       setErrorMsg("아이디 또는 이메일 정보가 일치하지 않습니다.");
       setSuccessMsg("");
     }
+  };
+
+  // 개인 설정 저장 제출
+  const handleProfileUpdateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentUser) return;
+
+    const userIndex = users.findIndex(u => u.username === currentUser.username);
+    if (userIndex === -1) {
+      setProfileError("계정을 찾을 수 없습니다.");
+      return;
+    }
+
+    const matchedUser = users[userIndex];
+
+    // 비밀번호 변경 처리 시 검증
+    if (editNewPassword) {
+      if (editOldPassword !== matchedUser.password) {
+        setProfileError("현재 비밀번호가 올바르지 않습니다.");
+        return;
+      }
+      if (editNewPassword !== editConfirmPassword) {
+        setProfileError("새 비밀번호 확인이 일치하지 않습니다.");
+        return;
+      }
+    }
+
+    // 원장 데이터 수정
+    const updatedUsers = [...users];
+    updatedUsers[userIndex] = {
+      ...matchedUser,
+      email: editEmail,
+      profileGradient: editGradient,
+      ...(editNewPassword ? { password: editNewPassword } : {})
+    };
+
+    setUsers(updatedUsers);
+    localStorage.setItem("tones_users", JSON.stringify(updatedUsers));
+
+    // 세션 정보 갱신
+    const updatedCurrentUser: UserAccount = {
+      username: currentUser.username,
+      email: editEmail,
+      profileGradient: editGradient
+    };
+    setCurrentUser(updatedCurrentUser);
+    localStorage.setItem("current_user", JSON.stringify(updatedCurrentUser));
+
+    setProfileSuccess("개인 설정이 안전하게 변경되었습니다!");
+    setProfileError("");
+
+    setTimeout(() => {
+      setShowProfileModal(false);
+      setEditOldPassword("");
+      setEditNewPassword("");
+      setEditConfirmPassword("");
+      setProfileSuccess("");
+    }, 1200);
   };
 
   // 로그아웃
@@ -315,14 +403,42 @@ export default function Sidebar({ activeTab, onTabSelect }: SidebarProps) {
               gap: "10px"
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {/* Clickable Profile Info Block */}
+            <div
+              onClick={() => {
+                setEditEmail(currentUser?.email || "");
+                setEditOldPassword("");
+                setEditNewPassword("");
+                setEditConfirmPassword("");
+                setEditGradient(currentUser?.profileGradient || "linear-gradient(135deg, #FF5E84 0%, #7fb2f0 100%)");
+                setProfileError("");
+                setProfileSuccess("");
+                setShowProfileModal(true);
+              }}
+              style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: "10px", 
+                cursor: "pointer",
+                padding: "6px",
+                borderRadius: "8px",
+                transition: "all 0.2s" 
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#202026";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "none";
+              }}
+              title="개인 설정 및 테마 수정"
+            >
               {/* Profile Avatar with dynamic gradient */}
               <div
                 style={{
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  background: "linear-gradient(135deg, #FF5E84 0%, #7fb2f0 100%)",
+                  background: currentUser?.profileGradient || "linear-gradient(135deg, #FF5E84 0%, #7fb2f0 100%)",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
@@ -777,6 +893,226 @@ export default function Sidebar({ activeTab, onTabSelect }: SidebarProps) {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* 5. 개인 설정 관리 모달 오버레이 ( showProfileModal ) */}
+      {showProfileModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0, 0, 0, 0.75)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10000,
+            animation: "fadeIn 0.2s ease-out"
+          }}
+          onClick={() => setShowProfileModal(false)}
+        >
+          <div
+            style={{
+              width: "clamp(320px, 90%, 420px)",
+              background: "#16161a",
+              border: "1px solid rgba(255, 94, 132, 0.25)",
+              borderRadius: "16px",
+              padding: "32px 24px",
+              position: "relative",
+              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 94, 132, 0.05)",
+              animation: "slideUp 0.2s ease-out"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowProfileModal(false)}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                background: "none",
+                border: "none",
+                color: "#6b6b7a",
+                cursor: "pointer",
+                padding: "4px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.15s ease"
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "#ffffff";
+                (e.currentTarget as HTMLButtonElement).style.background = "#202026";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "#6b6b7a";
+                (e.currentTarget as HTMLButtonElement).style.background = "none";
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            {/* Modal Header */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "20px" }}>
+              <div
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  background: editGradient,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "14px",
+                  color: "#ffffff",
+                  fontWeight: 700,
+                  fontSize: "18px",
+                  boxShadow: "0 0 15px rgba(255, 94, 132, 0.2)"
+                }}
+              >
+                {currentUser?.username.substring(0, 1).toUpperCase()}
+              </div>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
+                개인 설정 변경
+              </h3>
+              <p style={{ fontSize: "12.5px", color: "#8a8a93", margin: 0 }}>
+                {currentUser?.username}님의 이메일, 패스워드 및 아바타 테마 관리
+              </p>
+            </div>
+
+            {/* Profile Settings Form */}
+            <form onSubmit={handleProfileUpdateSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {/* 테마 그라데이션 선택 프리셋 */}
+              <div>
+                <span style={{ fontSize: "11px", color: "#6b6b7a", fontWeight: 600, display: "block", marginBottom: "8px", textTransform: "uppercase" }}>
+                  Profile Avatar Theme (아바타 테마)
+                </span>
+                <div style={{ display: "flex", gap: "10px", justifyContent: "space-between", background: "#121214", padding: "10px 14px", borderRadius: "8px", border: "1px solid #282830" }}>
+                  {GRADIENT_PRESETS.map((p) => {
+                    const isSelected = editGradient === p.value;
+                    return (
+                      <button
+                        key={p.label}
+                        type="button"
+                        onClick={() => setEditGradient(p.value)}
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          borderRadius: "50%",
+                          background: p.value,
+                          border: isSelected ? "3px solid #ffffff" : "2px solid transparent",
+                          cursor: "pointer",
+                          transition: "transform 0.15s",
+                          transform: isSelected ? "scale(1.15)" : "scale(1)",
+                          boxShadow: isSelected ? "0 0 10px rgba(255, 255, 255, 0.4)" : "none"
+                        }}
+                        title={p.label}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 이메일 수정 */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label style={{ fontSize: "11px", color: "#6b6b7a", fontWeight: 600, textTransform: "uppercase" }}>Email Address</label>
+                <div style={{ position: "relative" }}>
+                  <Mail style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} size={14} color="#6b6b7a" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="이메일을 입력하세요"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    style={{
+                      width: "100%", background: "#121214", border: "1px solid #282830", borderRadius: "8px",
+                      padding: "10px 12px 10px 38px", color: "#ffffff", fontSize: "13px", outline: "none", transition: "all 0.2s"
+                    }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = "#FF5E84"}
+                    onBlur={(e) => e.currentTarget.style.borderColor = "#282830"}
+                  />
+                </div>
+              </div>
+
+              {/* 비밀번호 변경 가이드 배너 */}
+              <div style={{ borderTop: "1px solid #282830", paddingTop: "12px", marginTop: "4px" }}>
+                <span style={{ fontSize: "11px", color: "#FF5E84", fontWeight: 600, display: "block", marginBottom: "10px", textTransform: "uppercase" }}>
+                  Change Password (비밀번호 변경 시에만 입력)
+                </span>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {/* 현재 비밀번호 */}
+                  <div style={{ position: "relative" }}>
+                    <Lock style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} size={13} color="#6b6b7a" />
+                    <input
+                      type="password"
+                      placeholder="현재 비밀번호"
+                      value={editOldPassword}
+                      onChange={(e) => setEditOldPassword(e.target.value)}
+                      style={{
+                        width: "100%", background: "#121214", border: "1px solid #282830", borderRadius: "8px",
+                        padding: "9px 12px 9px 36px", color: "#ffffff", fontSize: "12.5px", outline: "none", transition: "all 0.2s"
+                      }}
+                      onFocus={(e) => e.currentTarget.style.borderColor = "#FF5E84"}
+                      onBlur={(e) => e.currentTarget.style.borderColor = "#282830"}
+                    />
+                  </div>
+
+                  {/* 신규 비밀번호 */}
+                  <div style={{ position: "relative" }}>
+                    <Key style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} size={13} color="#6b6b7a" />
+                    <input
+                      type="password"
+                      placeholder="새 비밀번호"
+                      value={editNewPassword}
+                      onChange={(e) => setEditNewPassword(e.target.value)}
+                      style={{
+                        width: "100%", background: "#121214", border: "1px solid #282830", borderRadius: "8px",
+                        padding: "9px 12px 9px 36px", color: "#ffffff", fontSize: "12.5px", outline: "none", transition: "all 0.2s"
+                      }}
+                      onFocus={(e) => e.currentTarget.style.borderColor = "#FF5E84"}
+                      onBlur={(e) => e.currentTarget.style.borderColor = "#282830"}
+                    />
+                  </div>
+
+                  {/* 신규 비밀번호 확인 */}
+                  <div style={{ position: "relative" }}>
+                    <Key style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} size={13} color="#6b6b7a" />
+                    <input
+                      type="password"
+                      placeholder="새 비밀번호 확인"
+                      value={editConfirmPassword}
+                      onChange={(e) => setEditConfirmPassword(e.target.value)}
+                      style={{
+                        width: "100%", background: "#121214", border: "1px solid #282830", borderRadius: "8px",
+                        padding: "9px 12px 9px 36px", color: "#ffffff", fontSize: "12.5px", outline: "none", transition: "all 0.2s"
+                      }}
+                      onFocus={(e) => e.currentTarget.style.borderColor = "#FF5E84"}
+                      onBlur={(e) => e.currentTarget.style.borderColor = "#282830"}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {profileError && <div style={{ fontSize: "12px", color: "#FF5E84", textAlign: "center", fontWeight: 500 }}>⚠️ {profileError}</div>}
+              {profileSuccess && <div style={{ fontSize: "12px", color: "#60a870", textAlign: "center", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}><CheckCircle2 size={12} color="#60a870" /> {profileSuccess}</div>}
+
+              {/* 저장 액션 버튼 */}
+              <button type="submit" style={{
+                background: "linear-gradient(135deg, #FF5E84 0%, #d83e63 100%)", border: "none", borderRadius: "8px", padding: "12px",
+                color: "#ffffff", fontSize: "13.5px", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 4px 15px rgba(255, 94, 132, 0.25)", transition: "all 0.2s", marginTop: "6px"
+              }}>
+                <span>변경 사항 저장</span>
+              </button>
+            </form>
           </div>
         </div>
       )}
