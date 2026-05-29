@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import ChatPanel from "./components/ChatPanel";
 import AnalyticsPanel from "./components/AnalyticsPanel";
+import AIInsightPanel from "./components/AIInsightPanel";
 
 import { sendMessage } from "./actions/chat";
 
@@ -335,9 +336,7 @@ export default function DashboardPage() {
         </>
       )}
       {activeTab === "AI 인사이트" && (
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
-          AI 인사이트 패널 준비중
-        </div>
+        <AIInsightPanel />
       )}
       {activeTab === "리뷰 분석" && (
         <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
