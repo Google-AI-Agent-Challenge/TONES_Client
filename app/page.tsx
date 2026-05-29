@@ -7,6 +7,7 @@ import ChatPanel from "./components/ChatPanel";
 import AnalyticsPanel from "./components/AnalyticsPanel";
 import AIInsightPanel from "./components/AIInsightPanel";
 import ReviewAnalysisPanel from "./components/ReviewAnalysisPanel";
+import PadRecipeLineupPanel from "./components/PadRecipeLineupPanel";
 
 import { sendMessage } from "./actions/chat";
 
@@ -343,9 +344,7 @@ export default function DashboardPage() {
         <ReviewAnalysisPanel />
       )}
       {activeTab === "패드 레시피 라인업" && (
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
-          패드 레시피 라인업 패널 준비중
-        </div>
+        <PadRecipeLineupPanel />
       )}
       {activeTab === "제어 센터" && (
         <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
