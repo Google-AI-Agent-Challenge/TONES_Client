@@ -8,6 +8,7 @@ import AnalyticsPanel from "./components/AnalyticsPanel";
 import AIInsightPanel from "./components/AIInsightPanel";
 import ReviewAnalysisPanel from "./components/ReviewAnalysisPanel";
 import PadRecipeLineupPanel from "./components/PadRecipeLineupPanel";
+import ControlCenterPanel from "./components/ControlCenterPanel";
 
 import { sendMessage } from "./actions/chat";
 
@@ -347,9 +348,7 @@ export default function DashboardPage() {
         <PadRecipeLineupPanel />
       )}
       {activeTab === "제어 센터" && (
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", color: "#6b6b7a" }}>
-          제어 센터 패널 준비중
-        </div>
+        <ControlCenterPanel />
       )}
     </main>
   );
