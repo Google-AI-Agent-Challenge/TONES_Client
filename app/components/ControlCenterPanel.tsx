@@ -11,8 +11,6 @@ import {
   Square,
   ArrowRight,
   Terminal,
-  Play,
-  Cpu,
   SaveAll
 } from "lucide-react";
 
@@ -39,26 +37,99 @@ export default function ControlCenterPanel() {
   };
 
   return (
-    <div 
-      className="flex-1 flex overflow-hidden"
-      style={{
-        background: "#0c0c0e",
-        fontFamily: "'Inter', 'Outfit', 'Noto Sans KR', sans-serif"
-      }}
-    >
+    <div className="control-container">
+      <style>{`
+        .control-container {
+          display: flex;
+          flex-direction: row;
+          flex: 1;
+          overflow: hidden;
+          background: #0c0c0e;
+          font-family: 'Inter', 'Outfit', 'Noto Sans KR', sans-serif;
+        }
+        .control-main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          overflow-y: auto;
+          padding: 24px 32px;
+          border-right: 1px solid #1e1e24;
+        }
+        .control-sidebar-panel {
+          width: 360px;
+          min-width: 360px;
+          background: #121214;
+          padding: 24px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          overflow-y: auto;
+          height: 100%;
+        }
+        .control-metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 16px;
+          margin-bottom: 28px;
+        }
+        .control-settings-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 20px;
+        }
+        .data-source-item {
+          background: #16161a;
+          border: 1px solid #282830;
+          border-radius: 10px;
+          padding: 14px 18px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+        }
+        @media (max-width: 1024px) {
+          .control-container {
+            flex-direction: column;
+            overflow-y: auto;
+          }
+          .control-main-content {
+            height: auto;
+            overflow-y: visible;
+            border-right: none;
+            border-bottom: 1px solid #1e1e24;
+            padding: 20px 16px;
+          }
+          .control-sidebar-panel {
+            width: 100%;
+            min-width: 100%;
+            height: auto;
+            overflow-y: visible;
+            padding: 20px 16px;
+          }
+        }
+        @media (max-width: 640px) {
+          .data-source-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+          }
+          .data-source-right {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+        }
+      `}</style>
+
       {/* 왼쪽 메인 컨텐츠 */}
-      <div 
-        className="flex-1 flex flex-col h-full overflow-y-auto"
-        style={{
-          padding: "24px 32px",
-          borderRight: "1px solid #1e1e24"
-        }}
-      >
+      <div className="control-main-content">
         {/* 헤더 섹션 */}
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
-              <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#ffffff", margin: 0, letterSpacing: "-0.5px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
+              <h1 style={{ fontSize: "clamp(20px, 2.5vw, 24px)", fontWeight: 700, color: "#ffffff", margin: 0, letterSpacing: "-0.5px" }}>
                 제어 센터
               </h1>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", background: "rgba(96, 168, 112, 0.1)", border: "1px solid rgba(96, 168, 112, 0.2)", borderRadius: "20px", padding: "2px 10px" }}>
@@ -69,12 +140,12 @@ export default function ControlCenterPanel() {
                 <span style={{ fontSize: "10.5px", color: "#60a870", fontWeight: 600 }}>시스템 정상 작동 중</span>
               </div>
             </div>
-            <p style={{ fontSize: "13.5px", color: "#8a8a93", margin: 0 }}>
+            <p style={{ fontSize: "clamp(12px, 1.5vw, 13.5px)", color: "#8a8a93", margin: 0 }}>
               AI 분석 조건과 대시보드 동작 방식을 관리합니다.
             </p>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
             <div style={{ display: "flex", gap: "14px", fontSize: "12.5px" }}>
               <span style={{ color: "#6b6b7a", cursor: "pointer" }} className="hover:text-white transition-colors">Date Range</span>
               <span style={{ color: "#6b6b7a", cursor: "pointer" }} className="hover:text-white transition-colors">Product Selection</span>
@@ -97,7 +168,7 @@ export default function ControlCenterPanel() {
         </div>
 
         {/* 4개 핵심 제어 메트릭 카드 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "28px" }}>
+        <div className="control-metrics-grid">
           {/* 카드 1 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "12px", padding: "16px 20px", display: "flex", alignItems: "center", gap: "14px" }}>
             <div style={{ background: "rgba(255, 94, 132, 0.1)", padding: "10px", borderRadius: "10px" }}>
@@ -155,45 +226,45 @@ export default function ControlCenterPanel() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {/* 소스 1 */}
-            <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="data-source-item">
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ background: "#24242e", width: "36px", height: "36px", borderRadius: "8px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px" }}>🌿</div>
+                <div style={{ background: "#24242e", width: "36px", height: "36px", borderRadius: "8px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", flexShrink: 0 }}>🌿</div>
                 <div>
                   <h4 style={{ fontSize: "13.5px", fontWeight: 700, color: "#ffffff", margin: "0 0 2px 0" }}>Olive Young API</h4>
                   <span style={{ fontSize: "11px", color: "#8a8a93" }}>실시간 제품 리뷰 연동</span>
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div className="data-source-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                 <span style={{ fontSize: "12px", color: "#60a870", fontWeight: 600 }}>연결됨</span>
                 <button style={{ background: "#202026", border: "1px solid #282830", color: "#c4c4c7", fontSize: "11.5px", fontWeight: 500, padding: "5px 12px", borderRadius: "6px", cursor: "pointer" }}>로그 보기</button>
               </div>
             </div>
 
             {/* 소스 2 */}
-            <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="data-source-item">
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ background: "#24242e", width: "36px", height: "36px", borderRadius: "8px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px" }}>💻</div>
+                <div style={{ background: "#24242e", width: "36px", height: "36px", borderRadius: "8px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", flexShrink: 0 }}>💻</div>
                 <div>
                   <h4 style={{ fontSize: "13.5px", fontWeight: 700, color: "#ffffff", margin: "0 0 2px 0" }}>In-house Mall (자사몰)</h4>
                   <span style={{ fontSize: "11px", color: "#8a8a93" }}>구매 데이터 및 성향 분석</span>
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div className="data-source-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                 <span style={{ fontSize: "12px", color: "#60a870", fontWeight: 600 }}>연결됨</span>
                 <button style={{ background: "#202026", border: "1px solid #282830", color: "#c4c4c7", fontSize: "11.5px", fontWeight: 500, padding: "5px 12px", borderRadius: "6px", cursor: "pointer" }}>로그 보기</button>
               </div>
             </div>
 
             {/* 소스 3 (인증 필요) */}
-            <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="data-source-item">
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ background: "#2c1c20", width: "36px", height: "36px", borderRadius: "8px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px" }}>📞</div>
+                <div style={{ background: "#2c1c20", width: "36px", height: "36px", borderRadius: "8px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", flexShrink: 0 }}>📞</div>
                 <div>
                   <h4 style={{ fontSize: "13.5px", fontWeight: 700, color: "#ffffff", margin: "0 0 2px 0" }}>CS Data (Zendesk)</h4>
                   <span style={{ fontSize: "11px", color: "#8a8a93" }}>고객 문의 및 클레임 텍스트</span>
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div className="data-source-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                 <span style={{ fontSize: "12px", color: "#FF5E84", fontWeight: 600 }}>인증 필요</span>
                 <button style={{ background: "#FF5E84", border: "none", color: "#ffffff", fontSize: "11.5px", fontWeight: 600, padding: "5px 12px", borderRadius: "6px", cursor: "pointer" }}>재연결</button>
               </div>
@@ -202,13 +273,13 @@ export default function ControlCenterPanel() {
         </div>
 
         {/* AI 분석 설정 & 자연어 명령 설정 */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "20px" }}>
+        <div className="control-settings-grid">
           {/* AI 분석 설정 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "12px", padding: "20px" }}>
             <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#ffffff", margin: "0 0 16px 0" }}>AI 분석 설정</h3>
             
             <span style={{ fontSize: "12px", color: "#8a8a93", fontWeight: 600, display: "block", marginBottom: "8px" }}>주요 분석 속성 (Attributes)</span>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "8px", marginBottom: "20px" }}>
               {/* 속성 토글 1 */}
               <div 
                 onClick={() => toggleAttribute("ingredients")}
@@ -314,19 +385,7 @@ export default function ControlCenterPanel() {
       </div>
 
       {/* 우측 System Monitor 사이드바 */}
-      <div 
-        style={{
-          width: "360px",
-          minWidth: "360px",
-          background: "#121214",
-          padding: "24px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "24px",
-          overflowY: "auto",
-          height: "100%"
-        }}
-      >
+      <div className="control-sidebar-panel">
         <div>
           <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#ffffff", display: "flex", alignItems: "center", gap: "8px", margin: "0 0 16px 0" }}>
             <Terminal size={16} color="#FF5E84" />
@@ -339,7 +398,7 @@ export default function ControlCenterPanel() {
             <div style={{
               background: "#08080a", border: "1px solid #1e1e24", borderRadius: "8px", padding: "14px",
               fontFamily: "'Courier New', Courier, monospace", fontSize: "11px", display: "flex", flexDirection: "column", gap: "6px",
-              lineHeight: "1.4"
+              lineHeight: "1.4", overflowX: "auto"
             }}>
               <div>
                 <span style={{ color: "#6b6b7a" }}>14:52:10</span>{" "}
@@ -414,3 +473,4 @@ export default function ControlCenterPanel() {
     </div>
   );
 }
+

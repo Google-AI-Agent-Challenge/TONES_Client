@@ -5,13 +5,9 @@ import Image from "next/image";
 import { 
   RotateCw, 
   FileText, 
-  TrendingUp, 
-  AlertTriangle, 
   Plus, 
   Sparkles, 
-  ArrowUpRight,
-  ShieldCheck,
-  Percent
+  AlertTriangle
 } from "lucide-react";
 
 export default function PadRecipeLineupPanel() {
@@ -24,33 +20,117 @@ export default function PadRecipeLineupPanel() {
   };
 
   return (
-    <div 
-      className="flex-1 flex overflow-hidden"
-      style={{
-        background: "#0c0c0e",
-        fontFamily: "'Inter', 'Outfit', 'Noto Sans KR', sans-serif"
-      }}
-    >
+    <div className="lineup-container">
+      <style>{`
+        .lineup-container {
+          display: flex;
+          flex-direction: row;
+          flex: 1;
+          overflow: hidden;
+          background: #0c0c0e;
+          font-family: 'Inter', 'Outfit', 'Noto Sans KR', sans-serif;
+        }
+        .lineup-main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          overflow-y: auto;
+          padding: 24px 32px;
+          border-right: 1px solid #1e1e24;
+        }
+        .lineup-sidebar-panel {
+          width: 360px;
+          min-width: 360px;
+          background: #121214;
+          padding: 24px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          overflow-y: auto;
+          height: 100%;
+        }
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+          gap: 12px;
+          margin-bottom: 28px;
+        }
+        .diag-card {
+          background: #16161a;
+          border: 1px solid #282830;
+          border-radius: 14px;
+          padding: 20px;
+          display: flex;
+          gap: 20px;
+          align-items: center;
+        }
+        .diag-details {
+          flex: 1;
+          width: 100%;
+        }
+        .sub-info-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 10px;
+          margin-top: 14px;
+        }
+        .secondary-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 16px;
+          margin-top: 4px;
+        }
+        .strategy-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 16px;
+        }
+        @media (max-width: 1024px) {
+          .lineup-container {
+            flex-direction: column;
+            overflow-y: auto;
+          }
+          .lineup-main-content {
+            height: auto;
+            overflow-y: visible;
+            border-right: none;
+            border-bottom: 1px solid #1e1e24;
+            padding: 20px 16px;
+          }
+          .lineup-sidebar-panel {
+            width: 100%;
+            min-width: 100%;
+            height: auto;
+            overflow-y: visible;
+            padding: 20px 16px;
+          }
+        }
+        @media (max-width: 768px) {
+          .diag-card {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          .diag-image-container {
+            align-self: center;
+          }
+        }
+      `}</style>
+
       {/* 왼쪽 메인 컨텐츠 */}
-      <div 
-        className="flex-1 flex flex-col h-full overflow-y-auto"
-        style={{
-          padding: "24px 32px",
-          borderRight: "1px solid #1e1e24"
-        }}
-      >
+      <div className="lineup-main-content">
         {/* 헤더 섹션 */}
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
-            <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
+            <h1 style={{ fontSize: "clamp(20px, 2.5vw, 24px)", fontWeight: 700, color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
               패드 레시피 라인업
             </h1>
-            <p style={{ fontSize: "13.5px", color: "#8a8a93", margin: 0 }}>
+            <p style={{ fontSize: "clamp(12px, 1.5vw, 13.5px)", color: "#8a8a93", margin: 0 }}>
               제품별 리뷰 반응과 개선 신호를 비교해보세요.
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             <button 
               onClick={triggerSync}
               style={{
@@ -74,25 +154,25 @@ export default function PadRecipeLineupPanel() {
         </div>
 
         {/* 5개 핵심 스태츠 카드 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "12px", marginBottom: "28px" }}>
+        <div className="stats-grid">
           {/* 카드 1 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>등록 제품</span>
-            <div style={{ fontSize: "22px", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>5개</div>
+            <div style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>5개</div>
             <div style={{ fontSize: "10.5px", color: "#60a870", fontWeight: 500 }}>✓ Active lineup</div>
           </div>
 
           {/* 카드 2 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>전체 리뷰 수</span>
-            <div style={{ fontSize: "22px", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>42,860건</div>
+            <div style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>42,860건</div>
             <div style={{ fontSize: "10.5px", color: "#8a8a93" }}>최근 30일 누적</div>
           </div>
 
           {/* 카드 3 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>평균 긍정 반응</span>
-            <div style={{ fontSize: "22px", fontWeight: 700, color: "#60a870", marginBottom: "8px" }}>76.2%</div>
+            <div style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 700, color: "#60a870", marginBottom: "8px" }}>76.2%</div>
             <div style={{ height: "4px", background: "#242428", borderRadius: "2px", overflow: "hidden" }}>
               <div style={{ width: "76.2%", height: "100%", background: "#60a870" }}></div>
             </div>
@@ -101,14 +181,14 @@ export default function PadRecipeLineupPanel() {
           {/* 카드 4 (레드 보더) */}
           <div style={{ background: "#16161a", border: "1px solid #FF5E8480", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#FF5E84", fontWeight: 600, display: "block", marginBottom: "8px" }}>집중 개선 필요</span>
-            <div style={{ fontSize: "22px", fontWeight: 700, color: "#FF5E84", marginBottom: "4px" }}>2개</div>
+            <div style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 700, color: "#FF5E84", marginBottom: "4px" }}>2개</div>
             <div style={{ fontSize: "10px", color: "#FF5E84", fontWeight: 600, textTransform: "uppercase" }}>Urgent Signal</div>
           </div>
 
           {/* 카드 5 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>재구매 의사</span>
-            <div style={{ fontSize: "22px", fontWeight: 700, color: "#7fb2f0", marginBottom: "4px" }}>68.5%</div>
+            <div style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 700, color: "#7fb2f0", marginBottom: "4px" }}>68.5%</div>
             <div style={{ fontSize: "10.5px", color: "#7fb2f0", fontWeight: 500 }}>Retention score</div>
           </div>
         </div>
@@ -142,12 +222,9 @@ export default function PadRecipeLineupPanel() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {/* 진단 카드 1 (당근 패드) */}
-            <div style={{
-              background: "#16161a", border: "1px solid #282830", borderRadius: "14px", padding: "20px",
-              display: "flex", gap: "20px", alignItems: "center"
-            }}>
+            <div className="diag-card">
               {/* 이미지 */}
-              <div style={{ 
+              <div className="diag-image-container" style={{ 
                 width: "90px", height: "90px", borderRadius: "10px", background: "#1a1a1f", 
                 display: "flex", justifyContent: "center", alignItems: "center", flexShrink: 0, overflow: "hidden"
               }}>
@@ -155,10 +232,10 @@ export default function PadRecipeLineupPanel() {
               </div>
 
               {/* 디테일 */}
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "8px" }}>
+              <div className="diag-details">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
                   <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
                       <span style={{ background: "#2c1c20", border: "1px solid #FF5E8430", color: "#FF5E84", fontSize: "11px", fontWeight: 600, padding: "2px 7px", borderRadius: "4px" }}>
                         확인 필요
                       </span>
@@ -182,7 +259,7 @@ export default function PadRecipeLineupPanel() {
                 </div>
 
                 {/* 3분할 세부 정보 그리드 */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginTop: "14px" }}>
+                <div className="sub-info-grid">
                   <div style={{ background: "#1a1a20", padding: "10px 14px", borderRadius: "8px", display: "flex", flexDirection: "column", gap: "2px" }}>
                     <span style={{ fontSize: "11px", color: "#8a8a93", fontWeight: 500 }}>핵심 강점 (Strengths)</span>
                     <span style={{ fontSize: "13px", color: "#ffffff", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
@@ -210,12 +287,9 @@ export default function PadRecipeLineupPanel() {
             </div>
 
             {/* 진단 카드 2 (미나리 패드) */}
-            <div style={{
-              background: "#16161a", border: "1px solid #282830", borderRadius: "14px", padding: "20px",
-              display: "flex", gap: "20px", alignItems: "center"
-            }}>
+            <div className="diag-card">
               {/* 이미지 */}
-              <div style={{ 
+              <div className="diag-image-container" style={{ 
                 width: "90px", height: "90px", borderRadius: "10px", background: "#1a1a1f", 
                 display: "flex", justifyContent: "center", alignItems: "center", flexShrink: 0, overflow: "hidden"
               }}>
@@ -223,10 +297,10 @@ export default function PadRecipeLineupPanel() {
               </div>
 
               {/* 디테일 */}
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "8px" }}>
+              <div className="diag-details">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
                   <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
                       <span style={{ background: "#182620", border: "1px solid #60a87030", color: "#60a870", fontSize: "11px", fontWeight: 600, padding: "2px 7px", borderRadius: "4px" }}>
                         안정
                       </span>
@@ -250,7 +324,7 @@ export default function PadRecipeLineupPanel() {
                 </div>
 
                 {/* 3분할 세부 정보 그리드 */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginTop: "14px" }}>
+                <div className="sub-info-grid">
                   <div style={{ background: "#1a1a20", padding: "10px 14px", borderRadius: "8px", display: "flex", flexDirection: "column", gap: "2px" }}>
                     <span style={{ fontSize: "11px", color: "#8a8a93", fontWeight: 500 }}>핵심 강점 (Strengths)</span>
                     <span style={{ fontSize: "13px", color: "#ffffff", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
@@ -277,7 +351,7 @@ export default function PadRecipeLineupPanel() {
             </div>
 
             {/* 보완 서브 제품 그리드 */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "4px" }}>
+            <div className="secondary-grid">
               <div style={{
                 background: "#16161a", border: "1px solid #282830", borderRadius: "12px", padding: "14px 16px"
               }}>
@@ -318,7 +392,7 @@ export default function PadRecipeLineupPanel() {
             AI 라인업 전략 제안
           </h2>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div className="strategy-grid">
             <div style={{
               background: "#16161a", border: "1px solid #FF5E8440", borderRadius: "12px", padding: "20px",
               boxShadow: "0 4px 20px rgba(255, 94, 132, 0.05)"
@@ -349,19 +423,7 @@ export default function PadRecipeLineupPanel() {
       </div>
 
       {/* 우측 라인업 비교 패널 */}
-      <div 
-        style={{
-          width: "360px",
-          minWidth: "360px",
-          background: "#121214",
-          padding: "24px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "24px",
-          overflowY: "auto",
-          height: "100%"
-        }}
-      >
+      <div className="lineup-sidebar-panel">
         {/* 라인업 감성 분포 비교 */}
         <div>
           <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#ffffff", margin: "0 0 16px 0" }}>
@@ -483,3 +545,4 @@ export default function PadRecipeLineupPanel() {
     </div>
   );
 }
+

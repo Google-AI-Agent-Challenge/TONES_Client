@@ -9,7 +9,6 @@ import {
   ChevronDown, 
   TrendingUp,
   Brain,
-  Sliders,
   CheckCircle2
 } from "lucide-react";
 
@@ -141,33 +140,101 @@ export default function ReviewAnalysisPanel() {
   };
 
   return (
-    <div 
-      className="flex-1 flex overflow-hidden"
-      style={{
-        background: "#0c0c0e",
-        fontFamily: "'Inter', 'Outfit', 'Noto Sans KR', sans-serif"
-      }}
-    >
+    <div className="review-analysis-container">
+      <style>{`
+        .review-analysis-container {
+          display: flex;
+          flex-direction: row;
+          flex: 1;
+          overflow: hidden;
+          background: #0c0c0e;
+          font-family: 'Inter', 'Outfit', 'Noto Sans KR', sans-serif;
+        }
+        .review-main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          overflow-y: auto;
+          padding: 24px 32px;
+          border-right: 1px solid #1e1e24;
+        }
+        .review-sidebar-panel {
+          width: 360px;
+          min-width: 360px;
+          background: #121214;
+          padding: 24px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          overflow-y: auto;
+          height: 100%;
+        }
+        .filter-box {
+          background: #121214;
+          border: 1px solid #1e1e24;
+          borderRadius: 12px;
+          padding: 20px;
+          margin-bottom: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+        .filter-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 16px;
+        }
+        .filter-bottom-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 16px;
+          align-items: center;
+          border-top: 1px solid #1e1e24;
+          padding-top: 14px;
+        }
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+          gap: 12px;
+          margin-bottom: 28px;
+        }
+        @media (max-width: 1024px) {
+          .review-analysis-container {
+            flex-direction: column;
+            overflow-y: auto;
+          }
+          .review-main-content {
+            height: auto;
+            overflow-y: visible;
+            border-right: none;
+            border-bottom: 1px solid #1e1e24;
+            padding: 20px 16px;
+          }
+          .review-sidebar-panel {
+            width: 100%;
+            min-width: 100%;
+            height: auto;
+            overflow-y: visible;
+            padding: 20px 16px;
+          }
+        }
+      `}</style>
+
       {/* 왼쪽 메인 컨텐츠 */}
-      <div 
-        className="flex-1 flex flex-col h-full overflow-y-auto"
-        style={{
-          padding: "24px 32px",
-          borderRight: "1px solid #1e1e24"
-        }}
-      >
+      <div className="review-main-content">
         {/* 헤더 섹션 */}
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
-            <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
+            <h1 style={{ fontSize: "clamp(20px, 2.5vw, 24px)", fontWeight: 700, color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
               리뷰 분석
             </h1>
-            <p style={{ fontSize: "13.5px", color: "#8a8a93", margin: 0 }}>
+            <p style={{ fontSize: "clamp(12px, 1.5vw, 13.5px)", color: "#8a8a93", margin: 0 }}>
               리뷰 원문과 AI 분석 태그를 함께 확인해보세요.
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             <button style={{
               background: "#FF5E84", border: "none", color: "#ffffff", padding: "8px 16px", borderRadius: "8px",
               fontSize: "13px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px", cursor: "pointer",
@@ -187,7 +254,7 @@ export default function ReviewAnalysisPanel() {
         </div>
 
         {/* All Reviews & Product Selection 탭 */}
-        <div style={{ display: "flex", borderBottom: "1px solid #1e1e24", marginBottom: "20px" }}>
+        <div style={{ display: "flex", borderBottom: "1px solid #1e1e24", marginBottom: "20px", overflowX: "auto" }}>
           {["All Reviews", "Product Selection"].map(tab => (
             <button
               key={tab}
@@ -201,7 +268,8 @@ export default function ReviewAnalysisPanel() {
                 fontWeight: subTab === tab ? 700 : 500,
                 padding: "10px 24px",
                 cursor: "pointer",
-                transition: "all 0.15s ease"
+                transition: "all 0.15s ease",
+                whiteSpace: "nowrap"
               }}
             >
               {tab === "All Reviews" ? "전체 리뷰 피드" : "제품별 분석"}
@@ -210,17 +278,8 @@ export default function ReviewAnalysisPanel() {
         </div>
 
         {/* 상단 필터 컨트롤 박스 */}
-        <div style={{
-          background: "#121214",
-          border: "1px solid #1e1e24",
-          borderRadius: "12px",
-          padding: "20px",
-          marginBottom: "24px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "14px"
-        }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" }}>
+        <div className="filter-box">
+          <div className="filter-grid">
             {/* 제품 선택 셀렉터 */}
             <div>
               <label style={{ fontSize: "11px", color: "#6b6b7a", fontWeight: 600, display: "block", marginBottom: "6px", textTransform: "uppercase" }}>Product</label>
@@ -271,11 +330,11 @@ export default function ReviewAnalysisPanel() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px", alignItems: "center", borderTop: "1px solid #1e1e24", paddingTop: "14px" }}>
+          <div className="filter-bottom-grid">
             {/* 속성 칩 필터 */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
               <span style={{ fontSize: "12px", color: "#6b6b7a", fontWeight: 600 }}>주요 속성:</span>
-              <div style={{ display: "flex", gap: "6px" }}>
+              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                 {["Ingredients", "Texture", "Moisture"].map(attr => {
                   const isActive = selectedAttributes.includes(attr);
                   return (
@@ -317,11 +376,11 @@ export default function ReviewAnalysisPanel() {
         </div>
 
         {/* 5개 핵심 스태츠 카드 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "12px", marginBottom: "28px" }}>
+        <div className="stats-grid">
           {/* 스태츠 1 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>분석 리뷰 총계</span>
-            <div style={{ fontSize: "20px", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>18,420건</div>
+            <div style={{ fontSize: "clamp(16px, 2vw, 20px)", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>18,420건</div>
             <div style={{ fontSize: "10.5px", color: "#FF5E84", display: "flex", alignItems: "center", gap: "2px" }}>
               <TrendingUp size={10} />
               12% 증가 (전월비)
@@ -331,7 +390,7 @@ export default function ReviewAnalysisPanel() {
           {/* 스태츠 2 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>긍정 비율</span>
-            <div style={{ fontSize: "20px", fontWeight: 700, color: "#60a870", marginBottom: "8px" }}>74.8%</div>
+            <div style={{ fontSize: "clamp(16px, 2vw, 20px)", fontWeight: 700, color: "#60a870", marginBottom: "8px" }}>74.8%</div>
             <div style={{ height: "4px", background: "#242428", borderRadius: "2px", overflow: "hidden" }}>
               <div style={{ width: "74.8%", height: "100%", background: "#60a870" }}></div>
             </div>
@@ -340,7 +399,7 @@ export default function ReviewAnalysisPanel() {
           {/* 스태츠 3 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>부정 비율</span>
-            <div style={{ fontSize: "20px", fontWeight: 700, color: "#FF5E84", marginBottom: "8px" }}>13.7%</div>
+            <div style={{ fontSize: "clamp(16px, 2vw, 20px)", fontWeight: 700, color: "#FF5E84", marginBottom: "8px" }}>13.7%</div>
             <div style={{ height: "4px", background: "#242428", borderRadius: "2px", overflow: "hidden" }}>
               <div style={{ width: "13.7%", height: "100%", background: "#FF5E84" }}></div>
             </div>
@@ -349,7 +408,7 @@ export default function ReviewAnalysisPanel() {
           {/* 스태츠 4 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "10px", padding: "14px 16px" }}>
             <span style={{ fontSize: "11.5px", color: "#8a8a93", fontWeight: 500, display: "block", marginBottom: "8px" }}>혼합 비율</span>
-            <div style={{ fontSize: "20px", fontWeight: 700, color: "#7fb2f0", marginBottom: "8px" }}>11.5%</div>
+            <div style={{ fontSize: "clamp(16px, 2vw, 20px)", fontWeight: 700, color: "#7fb2f0", marginBottom: "8px" }}>11.5%</div>
             <div style={{ height: "4px", background: "#242428", borderRadius: "2px", overflow: "hidden" }}>
               <div style={{ width: "11.5%", height: "100%", background: "#7fb2f0" }}></div>
             </div>
@@ -361,7 +420,7 @@ export default function ReviewAnalysisPanel() {
             borderRadius: "10px", padding: "14px 16px"
           }}>
             <span style={{ fontSize: "11.5px", color: "rgba(255,255,255,0.7)", fontWeight: 500, display: "block", marginBottom: "8px" }}>AI 분석 신뢰도</span>
-            <div style={{ fontSize: "20px", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>92.4%</div>
+            <div style={{ fontSize: "clamp(16px, 2vw, 20px)", fontWeight: 700, color: "#ffffff", marginBottom: "4px" }}>92.4%</div>
             <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.8)", fontWeight: 500 }}>TONES LLM 4.0</span>
           </div>
         </div>
@@ -395,8 +454,8 @@ export default function ReviewAnalysisPanel() {
                     if (!isSelected) e.currentTarget.style.borderColor = "#282830";
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", flexWrap: "wrap", gap: "8px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                       <StarRow count={r.rating} />
                       <span style={{ fontSize: "11px", color: "#8a8a93" }}>{r.product}</span>
                       <span style={{ fontSize: "11px", color: "#444450" }}>•</span>
@@ -444,19 +503,7 @@ export default function ReviewAnalysisPanel() {
       </div>
 
       {/* 우측 AI 분석 상세 패널 */}
-      <div 
-        style={{
-          width: "360px",
-          minWidth: "360px",
-          background: "#121214",
-          padding: "24px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "24px",
-          overflowY: "auto",
-          height: "100%"
-        }}
-      >
+      <div className="review-sidebar-panel">
         <div>
           <h2 style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff", display: "flex", alignItems: "center", gap: "8px", margin: "0 0 16px 0" }}>
             <Brain size={16} color="#FF5E84" />
@@ -538,3 +585,4 @@ export default function ReviewAnalysisPanel() {
     </div>
   );
 }
+

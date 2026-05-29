@@ -39,33 +39,84 @@ export default function AIInsightPanel() {
   };
 
   return (
-    <div 
-      className="flex-1 flex overflow-hidden"
-      style={{
-        background: "#0c0c0e",
-        fontFamily: "'Inter', 'Outfit', 'Noto Sans KR', sans-serif",
-      }}
-    >
+    <div className="insight-container">
+      <style>{`
+        .insight-container {
+          display: flex;
+          flex-direction: row;
+          flex: 1;
+          overflow: hidden;
+          background: #0c0c0e;
+          font-family: 'Inter', 'Outfit', 'Noto Sans KR', sans-serif;
+        }
+        .main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          overflow-y: auto;
+          padding: 24px 32px;
+          border-right: 1px solid #1e1e24;
+        }
+        .sidebar-panel {
+          width: 360px;
+          min-width: 360px;
+          background: #121214;
+          padding: 24px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          overflow-y: auto;
+          height: 100%;
+        }
+        .metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 16px;
+          margin-bottom: 28px;
+        }
+        .bottom-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
+          margin-bottom: 32px;
+        }
+        @media (max-width: 1024px) {
+          .insight-container {
+            flex-direction: column;
+            overflow-y: auto;
+          }
+          .main-content {
+            height: auto;
+            overflow-y: visible;
+            border-right: none;
+            border-bottom: 1px solid #1e1e24;
+            padding: 20px 16px;
+          }
+          .sidebar-panel {
+            width: 100%;
+            min-width: 100%;
+            height: auto;
+            overflow-y: visible;
+            padding: 20px 16px;
+          }
+        }
+      `}</style>
+
       {/* 왼쪽 메인 컨텐츠 영역 */}
-      <div 
-        className="flex-1 flex flex-col h-full overflow-y-auto"
-        style={{
-          padding: "24px 32px",
-          borderRight: "1px solid #1e1e24"
-        }}
-      >
+      <div className="main-content">
         {/* 헤더 섹션 */}
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
-            <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
+            <h1 style={{ fontSize: "clamp(20px, 2.5vw, 24px)", fontWeight: 700, color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
               AI 인사이트
             </h1>
-            <p style={{ fontSize: "13.5px", color: "#8a8a93", margin: 0 }}>
+            <p style={{ fontSize: "clamp(12px, 1.5vw, 13.5px)", color: "#8a8a93", margin: 0 }}>
               AI가 리뷰 변화와 제품 리스크 신호를 자동으로 요약했어요.
             </p>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             {/* 기간 필터 */}
             <div className="relative">
               <button 
@@ -199,7 +250,7 @@ export default function AIInsightPanel() {
         </div>
 
         {/* 4개 핵심 지표 카드 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "28px" }}>
+        <div className="metrics-grid">
           {/* 카드 1 */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "12px", padding: "16px 20px", position: "relative" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
@@ -389,7 +440,7 @@ export default function AIInsightPanel() {
         </div>
 
         {/* 차트 & 키워드 영역 (하단) */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "24px", marginBottom: "32px" }}>
+        <div className="bottom-grid">
           {/* 리스크 키워드 트렌드 (차트) */}
           <div style={{ background: "#16161a", border: "1px solid #282830", borderRadius: "12px", padding: "20px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -550,19 +601,7 @@ export default function AIInsightPanel() {
       </div>
 
       {/* 우측 AI 브리핑 요약 사이드바 */}
-      <div 
-        style={{
-          width: "360px",
-          minWidth: "360px",
-          background: "#121214",
-          padding: "24px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "24px",
-          overflowY: "auto",
-          height: "100%"
-        }}
-      >
+      <div className="sidebar-panel">
         <div>
           <h2 style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff", display: "flex", alignItems: "center", gap: "8px", margin: "0 0 16px 0" }}>
             <Sparkles size={16} color="#FF5E84" />
