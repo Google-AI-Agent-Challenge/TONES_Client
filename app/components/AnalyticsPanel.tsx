@@ -29,6 +29,8 @@ interface AnalyticsPanelProps {
   aiBriefing?: string;
   pinnedWidget?: string | null;
   onPinWidget?: (widget: string | null) => void;
+  totalReviews?: number;
+  sentimentCounts?: { positive: number; neutral: number; negative: number };
 }
 
 // ----------------------------------------------------------------
